@@ -16,7 +16,9 @@ import java.util.Map;
  */
 @Component
 public class PermissionMapper {
-    private Map<String, List<String>> permission = new HashMap<>(){{
-        put("admin", List.of("/user/info"));
+    // TODO will be instead by DAO in the future
+    public Map<String, List<String>> permission = new HashMap<>(){{
+        put("admin", List.of("/user/info", "/user/test"));
+        put("test", List.of("/user/info"));
     }};
 }

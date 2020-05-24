@@ -9,9 +9,9 @@
         <relativePath/>
     </parent>
 
-    <artifactId>user-center</artifactId>
+    <artifactId>client-a</artifactId>
     <version>1.0.0</version>
-    <name>user-center</name>
+    <name>client-a</name>
 
 
 </project>
