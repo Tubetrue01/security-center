@@ -1,5 +1,7 @@
-package org.zpf.usercenter.pojo;
+package org.tubetrue01.usercenter.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,22 +11,17 @@ import java.util.Collection;
  * Created by IntelliJ IDEA.
  * User : Pengfei Zhang
  * Mail : Tubetrue01@gmail.com
- * Date : 2020/5/24
- * Time : 12:21 上午
+ * Date : 2020/5/26
+ * Time : 4:15 下午
  * Description :
  */
-public class User implements UserDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserInfo implements UserDetails {
 
-    private String username;
-    private String password;
-    private boolean isExpired = false;
-    private boolean isLock = false;
-    private boolean isEnable = false;
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+    private Integer id;        // 用户编号
+    private String username;   // 用户名
+    private String password;   // 密码
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,21 +40,39 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !this.isExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !this.isLock;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !this.isExpired;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.isEnable;
+        return true;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
 }

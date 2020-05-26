@@ -1,4 +1,4 @@
-package org.zpf.usercenter.handler;
+package org.tubetrue01.usercenter.handler;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -21,6 +21,7 @@ import java.io.IOException;
 @Log4j2
 @Component
 public class SuccessHandler implements AuthenticationSuccessHandler {
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {

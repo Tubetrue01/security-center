@@ -1,14 +1,15 @@
-package org.zpf.usercenter.configuration;
+package org.tubetrue01.usercenter.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.zpf.usercenter.handler.FailureHandler;
-import org.zpf.usercenter.handler.SuccessHandler;
+import org.tubetrue01.usercenter.handler.FailureHandler;
+import org.tubetrue01.usercenter.handler.SuccessHandler;
+import org.tubetrue01.usercenter.service.UserInfoServiceImpl;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,13 +19,16 @@ import org.zpf.usercenter.handler.SuccessHandler;
  * Time : 12:14 上午
  * Description :
  */
-@Configuration
+@EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SuccessHandler successHandler;
     @Autowired
     private FailureHandler failureHandler;
+
+    @Autowired
+    private UserInfoServiceImpl userInfoService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -33,10 +37,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        http.authorizeRequests()
+                .anyRequest().authenticated().and()
+                .formLogin()
+                .loginPage("/login.html")
+                .loginProcessingUrl("/user/login")
+                .permitAll()
                 .successHandler(successHandler).failureHandler(failureHandler).and()
-                .authorizeRequests()
-                .antMatchers("/user/login").permitAll()
-                .anyRequest().authenticated();
+                .userDetailsService(userInfoService)
+                .csrf().disable();
     }
 }
