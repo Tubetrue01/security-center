@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.utils;
+package org.tubetrue01.utils;
 
 /**
  * Created by IntelliJ IDEA.

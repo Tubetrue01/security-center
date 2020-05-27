@@ -5,9 +5,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.tubetrue01.usercenter.utils.ResultRtn;
-import org.tubetrue01.usercenter.utils.StatusCode;
-import org.tubetrue01.usercenter.utils.Utils;
+import org.tubetrue01.utils.ResultRtn;
+import org.tubetrue01.utils.StatusCode;
+import org.tubetrue01.utils.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,8 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             var userInfo = (UserDetails) principal;
             var authorities = userInfo.getAuthorities();
             Utils.RedisUtils.set(String.valueOf(token), authorities);
-            response.setCharacterEncoding("utf-8");
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
                     ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token))
             ));
