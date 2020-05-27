@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -35,7 +36,9 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             var token = Utils.IdUtils.generateId();
             var userInfo = (UserDetails) principal;
             var authorities = userInfo.getAuthorities();
-            Utils.RedisUtils.set(String.valueOf(token), authorities);
+            var authorizesList = new ArrayList<String>();
+            authorities.forEach(auth -> authorizesList.add(auth.getAuthority()));
+            Utils.RedisUtils.set(String.valueOf(token), authorizesList);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
