@@ -1,10 +1,11 @@
-package org.tubetrue01.usercenter.service;
+package org.tubetrue01.usercenter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tubetrue01.usercenter.mapper.BaseMapper;
 import org.tubetrue01.usercenter.mapper.RoleInfoMapper;
 import org.tubetrue01.usercenter.pojo.RoleInfo;
+import org.tubetrue01.usercenter.service.RoleInfoService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +16,7 @@ import org.tubetrue01.usercenter.pojo.RoleInfo;
  * Description :
  */
 @Service
-public class RoleInfoServiceImpl extends AbstractBaseServiceImpl<Integer, RoleInfo> implements RoleInfoService{
+public class RoleInfoServiceImpl extends AbstractBaseServiceImpl<Integer, RoleInfo> implements RoleInfoService {
 
     @Autowired
     private RoleInfoMapper roleInfoMapper;

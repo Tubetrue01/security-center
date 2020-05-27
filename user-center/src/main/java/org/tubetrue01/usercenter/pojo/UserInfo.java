@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,14 +22,15 @@ import java.util.Collection;
 @NoArgsConstructor
 public class UserInfo implements UserDetails {
 
-    private Integer id;        // 用户编号
-    private String username;   // 用户名
-    private String password;   // 密码
-    private Integer roleId;    // 角色编号
+    private Integer id;                             // 用户编号
+    private String username;                        // 用户名
+    private String password;                        // 密码
+    private Integer roleId;                         // 角色编号
+    private List<InterfaceInfo> interfaceInfoList;     // 权限列表
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.getInterfaceInfoList();
     }
 
     @Override

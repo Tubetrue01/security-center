@@ -1,6 +1,7 @@
-package org.tubetrue01.usercenter.service;
+package org.tubetrue01.usercenter.service.impl;
 
 import org.tubetrue01.usercenter.mapper.BaseMapper;
+import org.tubetrue01.usercenter.service.BaseService;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * Time : 4:44 下午
  * Description :
  */
-public abstract class AbstractBaseServiceImpl<ID, T> implements BaseService<ID, T>{
+public abstract class AbstractBaseServiceImpl<ID, T> implements BaseService<ID, T> {
 
     public abstract BaseMapper<ID, T> mapper();
 
