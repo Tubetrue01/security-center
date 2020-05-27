@@ -16,15 +16,21 @@
         <mybatis.version>2.1.2</mybatis.version>
         <common.version>1.0.0</common.version>
         <jdbc.version>2.3.0.RELEASE</jdbc.version>
-
     </properties>
 
     <modules>
         <module>user-center</module>
         <module>client-a</module>
+        <module>common</module>
     </modules>
 
     <dependencies>
+        <!-- Common -->
+        <dependency>
+            <groupId>org.tubetrue01</groupId>
+            <artifactId>common-spring-boot-starter</artifactId>
+            <version>${common.version}</version>
+        </dependency>
 
         <!-- Log4j2 -->
         <dependency>
@@ -68,12 +74,10 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
-
             <!-- Mybatis -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -105,12 +109,12 @@
         </dependencies>
     </dependencyManagement>
 
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.springframework.boot</groupId>-->
+    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 </project>
