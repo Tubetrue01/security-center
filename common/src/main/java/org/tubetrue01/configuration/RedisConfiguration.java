@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.configuration;
+package org.tubetrue01.configuration;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
