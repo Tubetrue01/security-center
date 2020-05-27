@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,8 +38,13 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             var userInfo = (UserDetails) principal;
             var authorities = userInfo.getAuthorities();
             var authorizesList = new ArrayList<String>();
-            authorities.forEach(auth -> authorizesList.add(auth.getAuthority()));
-            Utils.RedisUtils.set(String.valueOf(token), authorizesList);
+            var userInfoMap = new HashMap<String, Object>();
+            authorities.forEach(
+                    auth -> authorizesList.add(auth.getAuthority())
+            );
+            userInfoMap.put("username", userInfo.getUsername());
+            userInfoMap.put("authorizesList", authorizesList);
+            Utils.RedisUtils.set(String.valueOf(token), userInfoMap);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(

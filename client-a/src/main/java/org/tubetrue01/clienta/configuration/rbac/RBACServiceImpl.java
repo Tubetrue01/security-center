@@ -8,6 +8,7 @@ import org.tubetrue01.utils.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,12 +27,14 @@ public class RBACServiceImpl implements RBACService {
     @Override
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         var token = request.getHeader("token");
-        var permissions = Utils.RedisUtils.get(token);
+        var userInfoMapFromRedis = Utils.RedisUtils.get(token);
         var requestUri = request.getRequestURI();
         var requestMethod = request.getMethod();
 
-        if (permissions instanceof List) {
-            var permissionList = (List<String>) permissions;
+        if (userInfoMapFromRedis instanceof Map) {
+            var userInfoMap = (Map<String, Object>) userInfoMapFromRedis;
+            var username = userInfoMap.get("username");
+            var permissionList = (List<String>) userInfoMap.get("authorizesList");
             for (var grantedAuthority : permissionList) {
                 var url_method = grantedAuthority.split(":");
                 var url = url_method[0];
@@ -40,7 +43,7 @@ public class RBACServiceImpl implements RBACService {
                     return true;
                 }
             }
-            log.warn("-==用户:[{}]越级访问:[{}]--[{}]==-", token, requestUri, requestMethod);
+            log.warn("-==用户:[{}]越级访问:[{}]--[{}]==-", username, requestUri, requestMethod);
         }
         return false;
     }
