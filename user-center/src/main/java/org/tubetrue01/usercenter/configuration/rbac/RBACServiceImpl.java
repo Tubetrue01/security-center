@@ -2,7 +2,6 @@ package org.tubetrue01.usercenter.configuration.rbac;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -31,7 +30,7 @@ public class RBACServiceImpl implements RBACService {
             var requestUrl = request.getRequestURI();
             var requestMethod = request.getMethod();
 
-            for (GrantedAuthority grantedAuthority : authorities) {
+            for (var grantedAuthority : authorities) {
                 var interfaceInfo = grantedAuthority.getAuthority();
                 var url_method = interfaceInfo.split(":");
                 var url = url_method[0];
