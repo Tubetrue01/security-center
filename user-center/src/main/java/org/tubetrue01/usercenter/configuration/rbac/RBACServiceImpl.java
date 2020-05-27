@@ -29,13 +29,18 @@ public class RBACServiceImpl implements RBACService {
             var authorities = user.getAuthorities();
             var username = user.getUsername();
             var requestUrl = request.getRequestURI();
+            var requestMethod = request.getMethod();
 
-            for (GrantedAuthority url : authorities) {
-                if (antPathMatcher.match(url.getAuthority(), requestUrl)) {
+            for (GrantedAuthority grantedAuthority : authorities) {
+                var interfaceInfo = grantedAuthority.getAuthority();
+                var url_method = interfaceInfo.split(":");
+                var url = url_method[0];
+                var method = url_method[1];
+                if (antPathMatcher.match(url, requestUrl) && requestMethod.equalsIgnoreCase(method)) {
                     return true;
                 }
             }
-            log.warn("-==用户:[{}]越级访问:[{}]==-", username, requestUrl);
+            log.warn("-==用户:[{}]越级访问:[{}]--[{}]==-", username, requestUrl, requestMethod);
         }
         return false;
     }

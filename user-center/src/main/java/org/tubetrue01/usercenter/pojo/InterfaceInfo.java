@@ -23,6 +23,6 @@ public class InterfaceInfo implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return this.getInterfaceUrl();
+        return String.format("%s:%s", this.getInterfaceUrl(), this.getMethod());
     }
 }
