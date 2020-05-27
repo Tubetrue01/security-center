@@ -49,7 +49,6 @@ public class UserInfoServiceImpl extends AbstractBaseServiceImpl<Integer, UserIn
         var userInfo = this.userInfoMapper.select(user).get();
         var roleId = userInfo.getRoleId();
         List<InterfaceInfo> interfaceInfoList = this.interfaceInfoService.selectListByRoleId(roleId);
-        log.info("-==该角色的菜单信息为： {}==-", interfaceInfoList);
         userInfo.setInterfaceInfoList(interfaceInfoList);
         return userInfo;
     }

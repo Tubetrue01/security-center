@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.tubetrue01.usercenter.handler.FailureHandler;
 import org.tubetrue01.usercenter.handler.SuccessHandler;
-import org.tubetrue01.usercenter.service.UserInfoServiceImpl;
+import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest().authenticated().and()
+                .anyRequest().access("@RBACService.hasPermission(request, authentication)").and()
                 .formLogin()
                 .loginPage("/login.html")
                 .loginProcessingUrl("/user/login")
