@@ -1,6 +1,7 @@
 package org.tubetrue01.usercenter.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import java.util.Collection;
  * Time : 4:15 下午
  * Description :
  */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfo implements UserDetails {
@@ -22,6 +24,7 @@ public class UserInfo implements UserDetails {
     private Integer id;        // 用户编号
     private String username;   // 用户名
     private String password;   // 密码
+    private Integer roleId;    // 角色编号
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -57,22 +60,5 @@ public class UserInfo implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 
 }
