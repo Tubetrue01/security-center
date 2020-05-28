@@ -1,9 +1,12 @@
 package org.tubetrue01.clienta.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.tubetrue01.clienta.configuration.rbac.LoginFilter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,10 +19,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private LoginFilter loginFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().access("@RBACService.hasPermission(request, authentication)").and()
+        http
+                .addFilterBefore(loginFilter, BasicAuthenticationFilter.class)
+                .authorizeRequests()
+                .anyRequest().access("@RBACService.hasPermission(request, authentication)")
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }
