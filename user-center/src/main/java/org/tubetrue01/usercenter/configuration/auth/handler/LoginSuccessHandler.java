@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.handler;
+package org.tubetrue01.usercenter.configuration.auth.handler;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Log4j2
 @Component
-public class SuccessHandler implements AuthenticationSuccessHandler {
+public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

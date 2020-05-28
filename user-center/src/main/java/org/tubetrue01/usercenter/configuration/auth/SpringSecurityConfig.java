@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.tubetrue01.usercenter.configuration.auth.filter.LoginForJsonFilter;
-import org.tubetrue01.usercenter.handler.FailureHandler;
-import org.tubetrue01.usercenter.handler.SuccessHandler;
+import org.tubetrue01.usercenter.configuration.auth.handler.LoginFailureHandler;
+import org.tubetrue01.usercenter.configuration.auth.handler.LoginSuccessHandler;
 import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
 
 /**
@@ -27,9 +27,9 @@ import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private SuccessHandler successHandler;
+    private LoginSuccessHandler successHandler;
     @Autowired
-    private FailureHandler failureHandler;
+    private LoginFailureHandler failureHandler;
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
     @Autowired
