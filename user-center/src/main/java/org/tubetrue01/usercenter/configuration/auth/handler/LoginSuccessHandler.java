@@ -1,5 +1,7 @@
 package org.tubetrue01.usercenter.configuration.auth.handler;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +46,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             );
             userInfoMap.put("username", userInfo.getUsername());
             userInfoMap.put("authorizesList", authorizesList);
+
+            var jwt = Jwts.builder()
+                    .setSubject(authentication.getName())
+                    .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2 * 1000))
+                    .signWith(SignatureAlgorithm.HS256, "MyJwtSecret")
+                    .compact();
+
+            userInfoMap.put("jwt", jwt);
             Utils.RedisUtils.set(token, userInfoMap);
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
-                    ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token))
+                    ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token, "jwt", jwt))
             ));
         }
     }
