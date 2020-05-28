@@ -17,6 +17,7 @@ public enum StatusCode {
     LOGIN_ERROR(10035, "登录失败"),
     LOGOUT_SUCCESS(10038, "注销成功"),
     LOGOUT_ERROR(10039, "注销失败"),
+    JWT_IS_NULL(10040, "JWT为空"),
     LOGIN_TIMEOUT(10041, "登陆超时");
 
     public int code;
