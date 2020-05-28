@@ -44,7 +44,6 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             userInfoMap.put("username", userInfo.getUsername());
             userInfoMap.put("authorizesList", authorizesList);
             Utils.RedisUtils.set(token, userInfoMap);
-            response.setCharacterEncoding("UTF-8");
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
                     ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token))
