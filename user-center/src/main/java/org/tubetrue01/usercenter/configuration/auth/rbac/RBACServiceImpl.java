@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.configuration.rbac;
+package org.tubetrue01.usercenter.configuration.auth.rbac;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.configuration.rbac;
+package org.tubetrue01.usercenter.configuration.auth.rbac;
 
 import org.springframework.security.core.Authentication;
 
