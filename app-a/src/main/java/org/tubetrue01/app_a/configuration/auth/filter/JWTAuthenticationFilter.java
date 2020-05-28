@@ -7,7 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.tubetrue01.app_a.configuration.auth.filter.exception.UsernameIsExitedException;
 import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,15 +55,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         var claims = Jwts.parser().setSigningKey("MyJwtSecret")
                 .parseClaimsJws(token)
                 .getBody();
-
         var username = claims.getSubject();
-        var expiration = claims.getExpiration();
-        var now = new Date();
-
-        if (now.getTime() > expiration.getTime()) {
-            throw new UsernameIsExitedException("该账号已过期,请重新登陆");
-        }
-
         if (username != null) {
             return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
         }
