@@ -14,9 +14,31 @@
         <java.version>11</java.version>
         <jackson.version>2.11.0</jackson.version>
         <autoconfigure.version>2.3.0.RELEASE</autoconfigure.version>
+        <jwt.version>0.9.1</jwt.version>
     </properties>
 
     <dependencies>
+        <!-- API, java.xml.bind module -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
+        <!-- Runtime, com.sun.xml.bind module -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
         <!-- Jackson start -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

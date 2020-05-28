@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,9 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -200,4 +201,102 @@ public class Utils {
             return objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
         }
     }
+
+    @Log4j2
+    @Component
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    // FIXME Optimized it
+    public static class JwtUtils {
+        private static final String CLAIM_KEY_MEMBER = "sub";
+        private static final String CLAIM_KEY_CREATED = "created";
+        private static final String SECRET = "memberSecret";
+        private static final Long EXPIRATION = 1000 * 60L;
+        private static final String MEMBER_TOKEN = "member_token";
+
+        // According to the token responsible for generating JWT
+        private String generateToken(Map<String, Object> claims) {
+            return Jwts.builder()
+                    .setClaims(claims)
+//                .setExpiration(generateExpirationDate())
+                    .signWith(SignatureAlgorithm.HS512, SECRET)
+                    .compact();
+        }
+
+        // Get the load in JWT from the token
+        private Claims getClaimsFromToken(String token) {
+            Claims claims = null;
+            try {
+                claims = Jwts.parser()
+                        .setSigningKey(SECRET)
+                        .parseClaimsJws(token)
+                        .getBody();
+            } catch (Exception e) {
+                log.error("JWT格式验证失败:{}", token);
+            }
+            return claims;
+        }
+
+        // Generate token expiration time
+        private Date generateExpirationDate() {
+            return new Date(System.currentTimeMillis() + EXPIRATION);
+        }
+
+        // Get login user from token
+        public String getUserNameFromToken(String token) {
+            String username;
+            try {
+                var claims = getClaimsFromToken(token);
+                username = claims.getSubject();
+            } catch (Exception e) {
+                username = null;
+            }
+            return username;
+        }
+
+        /**
+         * Verify that the token is still valid
+         *
+         * @param token from client
+         * @param key
+         */
+        public boolean validateToken(String token, String key) {
+            var username = getUserNameFromToken(token);
+            return username.equals(key) && !isTokenExpired(token);
+        }
+
+        // Determine whether the token has expired
+        private boolean isTokenExpired(String token) {
+            var expiredDate = getExpiredDateFromToken(token);
+            //return expiredDate.before(new Date());
+            return false;
+        }
+
+        // Get expiration time from token
+        private Date getExpiredDateFromToken(String token) {
+            var claims = getClaimsFromToken(token);
+            return claims.getExpiration();
+        }
+
+        // Generate token based on user information
+        public String generateToken(String key) {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put(CLAIM_KEY_MEMBER, key);
+            claims.put(CLAIM_KEY_CREATED, new Date());
+            return generateToken(claims);
+        }
+
+        // Determine whether the token can be refreshed
+        public boolean canRefresh(String token) {
+            return !isTokenExpired(token);
+        }
+
+        // Refresh token
+        public String refreshToken(String token) {
+            Claims claims = getClaimsFromToken(token);
+            claims.put(CLAIM_KEY_CREATED, new Date());
+            return generateToken(claims);
+        }
+
+    }
+
 }
