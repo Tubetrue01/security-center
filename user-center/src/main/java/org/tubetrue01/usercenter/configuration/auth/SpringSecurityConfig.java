@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.configuration;
+package org.tubetrue01.usercenter.configuration.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.tubetrue01.usercenter.handler.FailureHandler;
 import org.tubetrue01.usercenter.handler.SuccessHandler;
 import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
@@ -27,7 +29,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private SuccessHandler successHandler;
     @Autowired
     private FailureHandler failureHandler;
-
+    @Autowired
+    private LogoutHandler logoutHandler;
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
     @Autowired
     private UserInfoServiceImpl userInfoService;
 
@@ -38,16 +43,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().access("@RBACService.hasPermission(request, authentication)").and()
+        http
+             .authorizeRequests()
+                     .anyRequest().access("@RBACService.hasPermission(request, authentication)")
+             .and()
                 .formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/user/login")
-                .permitAll()
-                .successHandler(successHandler).failureHandler(failureHandler).and()
+                   .loginPage("/login.html")
+                   .loginProcessingUrl("/user/login").permitAll()
+                   .successHandler(successHandler)
+                   .failureHandler(failureHandler)
+             .and()
                 .userDetailsService(userInfoService)
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .logout()
+                   .addLogoutHandler(logoutHandler)
+                   .logoutUrl("/user/logout")
+                   .logoutSuccessHandler(logoutSuccessHandler)
+             .and()
                 .csrf().disable();
     }
 }
