@@ -9,7 +9,6 @@ import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,11 +29,11 @@ import java.util.Map;
 public class SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("-==登陆成功！==-");
         var principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
-            var token = Utils.IdUtils.generateId();
+            var token = String.valueOf(Utils.IdUtils.generateId());
             var userInfo = (UserDetails) principal;
             var authorities = userInfo.getAuthorities();
             var authorizesList = new ArrayList<String>();
@@ -44,7 +43,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             );
             userInfoMap.put("username", userInfo.getUsername());
             userInfoMap.put("authorizesList", authorizesList);
-            Utils.RedisUtils.set(String.valueOf(token), userInfoMap);
+            Utils.RedisUtils.set(token, userInfoMap);
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
