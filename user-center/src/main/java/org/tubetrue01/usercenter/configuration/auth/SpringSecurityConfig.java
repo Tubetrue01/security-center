@@ -15,6 +15,9 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.tubetrue01.usercenter.configuration.auth.filter.LoginForJsonFilter;
 import org.tubetrue01.usercenter.configuration.auth.handler.LoginFailureHandler;
 import org.tubetrue01.usercenter.configuration.auth.handler.LoginSuccessHandler;
+import org.tubetrue01.usercenter.configuration.auth.sms.SmsAuthenticationConfig;
+import org.tubetrue01.usercenter.configuration.auth.sms.SmsAuthenticationFilter;
+import org.tubetrue01.usercenter.configuration.auth.sms.SmsCodeFilter;
 import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
 
 /**
@@ -35,6 +38,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private LogoutSuccessHandler logoutSuccessHandler;
     @Autowired
     private UserInfoServiceImpl userInfoService;
+    @Autowired
+    private SmsCodeFilter smsCodeFilter;
+    @Autowired
+    private SmsAuthenticationConfig smsAuthenticationConfig;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,18 +52,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-             .authorizeRequests()
-                     .anyRequest().access("@RBACService.hasPermission(request, authentication)")
-             .and()
+            .addFilterBefore(smsAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeRequests()
+                .antMatchers("/sms/code").permitAll()
+                .anyRequest().access("@RBACService.hasPermission(request, authentication)")
+            .and()
                 .formLogin()
-             .and()
+            .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
                 .logout()
-                   .logoutUrl("/user/logout")
-                   .logoutSuccessHandler(logoutSuccessHandler)
-             .and()
-                .csrf().disable();
+                    .logoutUrl("/user/logout")
+                    .logoutSuccessHandler(logoutSuccessHandler)
+            .and()
+                .csrf().disable()
+            .apply(smsAuthenticationConfig);
+
         http.addFilterAt(loginForJsonFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -73,6 +87,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         loginForJsonFilter.setAuthenticationManager(authenticationManagerBean());
         loginForJsonFilter.setFilterProcessesUrl("/user/login");
         return loginForJsonFilter;
+    }
+
+    @Bean
+    public SmsAuthenticationFilter smsAuthenticationFilter() throws Exception {
+        var smsAuthenticationFilter = new SmsAuthenticationFilter();
+        smsAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
+        smsAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        smsAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
+        return smsAuthenticationFilter;
     }
 
     @Bean

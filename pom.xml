@@ -21,6 +21,7 @@
     <modules>
         <module>user-center</module>
         <module>client-a</module>
+        <module>app-a</module>
         <module>common</module>
     </modules>
 

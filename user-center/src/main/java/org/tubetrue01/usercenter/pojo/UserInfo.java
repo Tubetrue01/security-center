@@ -26,7 +26,8 @@ public class UserInfo implements UserDetails {
     private String username;                        // 用户名
     private String password;                        // 密码
     private Integer roleId;                         // 角色编号
-    private List<InterfaceInfo> interfaceInfoList;     // 权限列表
+    private String mobile;                          // 手机号
+    private List<InterfaceInfo> interfaceInfoList;  // 权限列表
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
