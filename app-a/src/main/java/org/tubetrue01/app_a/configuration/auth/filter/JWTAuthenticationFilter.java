@@ -34,32 +34,34 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         super(authenticationManager);
     }
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         var token = request.getHeader("jwt");
         log.info("-==Get the token is : [{}]==-", token);
-        if (token == null || token.isEmpty()) {
+        UsernamePasswordAuthenticationToken authenticationToken;
+        if (token == null || token.isEmpty() || (authenticationToken = getAuthentication(token)) == null) {
             log.info("-==Token is null and system return==-");
             response.setHeader("content-type", "application/json;charset=utf-8");
-            response.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.JWT_IS_NULL)));
+            response.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.JWT_IS_NULL_OR_INVALID)));
             return;
         }
-        UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
-
-        var claims = Jwts.parser().setSigningKey("MyJwtSecret")
-                .parseClaimsJws(token)
-                .getBody();
-        var username = claims.getSubject();
-        if (username != null) {
-            return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+        try {
+            var claims = Jwts.parser()
+                    .setSigningKey("MyJwtSecret")
+                    .parseClaimsJws(token)
+                    .getBody();
+            var username = claims.getSubject();
+            if (username != null) {
+                return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+            }
+        } catch (Exception e) {
+            log.warn("-==JWT已过期==-");
         }
         return null;
     }
-
 }
