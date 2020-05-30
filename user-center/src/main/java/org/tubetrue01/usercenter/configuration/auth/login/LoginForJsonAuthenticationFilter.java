@@ -21,7 +21,7 @@ import java.util.Map;
  * Description :
  */
 @Log4j2
-public class LoginForJsonFilter extends UsernamePasswordAuthenticationFilter {
+public class LoginForJsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
