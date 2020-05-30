@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Log4j2
 @SpringBootApplication
 public class UserCenterApplication {
-
-
-
     public static void main(String[] args) {
         SpringApplication.run(UserCenterApplication.class, args);
 
