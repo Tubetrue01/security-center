@@ -9,6 +9,8 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.tubetrue01.utils.ResultRtn;
+import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
 
 import javax.servlet.FilterChain;
@@ -41,7 +43,10 @@ public class SmsCodeFilter extends OncePerRequestFilter {
             try {
                 validateSmsCode(new ServletWebRequest(httpServletRequest));
             } catch (ValidateSmsCodeException e) {
-                authenticationFailureHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
+                log.error("-==短信码校验失败==-");
+                httpServletResponse.setContentType("application/json;charset=utf-8");
+                httpServletResponse.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.SMS_CODE_FAILURE)));
+                // authenticationFailureHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
                 return;
             }
         }
