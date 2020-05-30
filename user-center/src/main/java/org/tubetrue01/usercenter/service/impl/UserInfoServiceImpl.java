@@ -42,11 +42,14 @@ public class UserInfoServiceImpl extends AbstractBaseServiceImpl<Integer, UserIn
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("-======Enter userInfoServiceImpl======-");
         var user = createUserInfo(username);
-        var userInfo = this.userInfoMapper.select(user).orElseGet(UserInfo::new);
-        var roleId = userInfo.getRoleId();
-        var interfaceInfoList = this.interfaceInfoService.selectListByRoleId(roleId);
-        userInfo.setInterfaceInfoList(interfaceInfoList);
-        return userInfo;
+        return this.userInfoMapper.select(user)
+                .map(userInfoFromDao -> {
+                    var roleId = userInfoFromDao.getRoleId();
+                    var interfaceInfoList = this.interfaceInfoService.selectListByRoleId(roleId);
+                    userInfoFromDao.setInterfaceInfoList(interfaceInfoList);
+                    return userInfoFromDao;
+                })
+                .orElse(null);
     }
 
     protected UserInfo createUserInfo(String username) {
