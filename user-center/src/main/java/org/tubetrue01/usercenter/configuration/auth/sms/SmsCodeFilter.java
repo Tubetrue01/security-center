@@ -59,7 +59,7 @@ public class SmsCodeFilter extends OncePerRequestFilter {
             throw new ValidateSmsCodeException("验证码不能为空！");
         } else if (smsCodeFromRedis == null) {
             throw new ValidateSmsCodeException("验证码不存在，请重新发送！");
-        } else if (!smsCodeFromRedis.toString().equalsIgnoreCase(smsCodeInRequest)){
+        } else if (!smsCodeFromRedis.toString().equalsIgnoreCase(smsCodeInRequest)) {
             throw new ValidateSmsCodeException("验证码不正确！");
         }
         // Valid success and delete it

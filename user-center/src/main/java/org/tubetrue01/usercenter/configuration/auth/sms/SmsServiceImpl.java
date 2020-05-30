@@ -1,6 +1,5 @@
 package org.tubetrue01.usercenter.configuration.auth.sms;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.tubetrue01.usercenter.pojo.UserInfo;
 import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
@@ -13,8 +12,7 @@ import org.tubetrue01.usercenter.service.impl.UserInfoServiceImpl;
  * Time : 5:27 下午
  * Description :
  */
-@Component
-@Qualifier("smsService")
+@Component("smsService")
 public class SmsServiceImpl extends UserInfoServiceImpl {
 
     @Override
