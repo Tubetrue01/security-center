@@ -23,10 +23,11 @@ import java.io.IOException;
 @Log4j2
 @Component
 public class LogoutSuccessCustomerHandler implements LogoutSuccessHandler {
+    private static final String TOKEN = "token";
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        var token = request.getHeader("token");
-        response.addHeader("content-type", "application/json;charset=utf-8");
+        var token = request.getHeader(TOKEN);
+        response.setContentType("application/json;charset=utf-8");
         try {
             var out = response.getWriter();
             if (token == null || token.isEmpty()) {

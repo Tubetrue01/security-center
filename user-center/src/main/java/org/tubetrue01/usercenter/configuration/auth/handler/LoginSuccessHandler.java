@@ -59,7 +59,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             userInfoMap.put("jwt", jwt);
             // The token info has the 60s lifetime
             Utils.RedisUtils.set(token, userInfoMap, REDIS_EXPIRE);
-            response.setHeader("content-type", "application/json;charset=UTF-8");
+            response.setContentType("application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
                     ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token, "jwt", jwt))
             ));

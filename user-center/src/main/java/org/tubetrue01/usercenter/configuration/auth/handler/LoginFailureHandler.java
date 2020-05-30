@@ -4,6 +4,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.tubetrue01.utils.ResultRtn;
+import org.tubetrue01.utils.StatusCode;
+import org.tubetrue01.utils.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +26,9 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        log.warn("-==用户登陆失败！==-", e);
-        httpServletResponse.setStatus(500);
-        httpServletResponse.getWriter().println("Login failure🙅");
+        log.error("-==用户登陆失败！==-");
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        httpServletResponse.getWriter()
+                .println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.LOGIN_ERROR)));
     }
 }

@@ -41,7 +41,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         UsernamePasswordAuthenticationToken authenticationToken;
         if (token == null || token.isEmpty() || (authenticationToken = getAuthentication(token)) == null) {
             log.info("-==Token is null and system return==-");
-            response.setHeader("content-type", "application/json;charset=utf-8");
+            response.setContentType("application/json;charset=utf-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.JWT_IS_NULL_OR_INVALID)));
             return;
         }
