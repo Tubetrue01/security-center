@@ -1,6 +1,7 @@
 package org.tubetrue01.usercenter.configuration.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,9 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.tubetrue01.usercenter.configuration.auth.filter.LoginForJsonFilter;
 import org.tubetrue01.usercenter.configuration.auth.handler.LoginFailureHandler;
 import org.tubetrue01.usercenter.configuration.auth.handler.LoginSuccessHandler;
+import org.tubetrue01.usercenter.configuration.auth.login.LoginForJsonFilter;
 import org.tubetrue01.usercenter.configuration.auth.sms.SmsAuthenticationConfig;
 import org.tubetrue01.usercenter.configuration.auth.sms.SmsAuthenticationFilter;
 import org.tubetrue01.usercenter.configuration.auth.sms.SmsCodeFilter;
@@ -36,6 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private LoginFailureHandler failureHandler;
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
+    @Qualifier("userInfoService")
     @Autowired
     private UserInfoServiceImpl userInfoService;
     @Autowired

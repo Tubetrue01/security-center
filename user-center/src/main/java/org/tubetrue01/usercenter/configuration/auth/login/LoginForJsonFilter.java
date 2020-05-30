@@ -1,4 +1,4 @@
-package org.tubetrue01.usercenter.configuration.auth.filter;
+package org.tubetrue01.usercenter.configuration.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
