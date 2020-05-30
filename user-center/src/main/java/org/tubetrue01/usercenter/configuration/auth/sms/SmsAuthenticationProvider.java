@@ -26,7 +26,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
         var userDetails = userDetailsService.loadUserByUsername((String) authenticationToken.getPrincipal());
 
         if (userDetails == null){
-            throw new InternalAuthenticationServiceException("未找到与该手机号对应的用户");
+            throw new InternalAuthenticationServiceException("No user found corresponding to the phone numbers");
         }
 
         var authenticationResult = new SmsAuthenticationToken(userDetails, userDetails.getAuthorities());
