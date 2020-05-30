@@ -23,6 +23,7 @@ import java.util.Map;
 @SuppressWarnings("all")
 public class RBACServiceImpl implements RBACService {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    private static final long TOKEN_EXPIRE = 60L;  // 60s
 
     @Override
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
@@ -40,6 +41,9 @@ public class RBACServiceImpl implements RBACService {
                 var url = url_method[0];
                 var method = url_method[1];
                 if (antPathMatcher.match(url, requestUri) && requestMethod.equalsIgnoreCase(method)) {
+                    // I think i need to udpate the token expired time if i can access this url
+                    log.info("-==成功访问URL，更新Token令牌的过期时间==-");
+                    Utils.RedisUtils.updateExpired(token,TOKEN_EXPIRE);
                     return true;
                 }
             }

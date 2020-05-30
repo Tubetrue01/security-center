@@ -31,6 +31,8 @@ import java.util.Map;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final long REDIS_EXPIRE = 60L;  // 60s
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("-==登陆成功！==-");
@@ -47,6 +49,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             userInfoMap.put("username", userInfo.getUsername());
             userInfoMap.put("authorizesList", authorizesList);
 
+            // The jwt has the 2 hours lifetime
             var jwt = Jwts.builder()
                     .setSubject(authentication.getName())
                     .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2 * 1000))
@@ -54,7 +57,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .compact();
 
             userInfoMap.put("jwt", jwt);
-            Utils.RedisUtils.set(token, userInfoMap);
+            // The token info has the 60s lifetime
+            Utils.RedisUtils.set(token, userInfoMap, REDIS_EXPIRE);
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
                     ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token, "jwt", jwt))

@@ -136,6 +136,14 @@ public class Utils {
             redisTemplate.opsForValue().set(key, object, duration, TimeUnit.SECONDS);
         }
 
+        /**
+         * @param key The key need to update the expire time
+         * @param duration The new expire time for this key
+         */
+        public static void updateExpired(String key, Long duration) {
+            redisTemplate.expire(key, duration, TimeUnit.SECONDS);
+        }
+
         public static void set(String key, Object object) {
             redisTemplate.opsForValue().set(key, object);
         }
