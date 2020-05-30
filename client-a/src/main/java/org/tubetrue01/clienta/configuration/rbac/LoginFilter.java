@@ -25,8 +25,7 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = request.getHeader("token");
-        var tokenFromRedis = Utils.RedisUtils.get(token);
-        if (token == null || tokenFromRedis == null) {
+        if (token == null || Utils.RedisUtils.get(token) == null) {
             response.setHeader("content-type", "application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.LOGIN_TIMEOUT)));
         } else {
