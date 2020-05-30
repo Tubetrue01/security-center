@@ -1,8 +1,6 @@
 package org.tubetrue01.usercenter.configuration.auth.sms;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -29,10 +27,8 @@ import java.io.IOException;
  */
 @Log4j2
 @Component
-public class SmsCodeFilter extends OncePerRequestFilter {
+public class SmsCodeCheckFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private AuthenticationFailureHandler authenticationFailureHandler;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
@@ -46,7 +42,6 @@ public class SmsCodeFilter extends OncePerRequestFilter {
                 log.error("-==短信码校验失败==-");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 httpServletResponse.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.SMS_CODE_FAILURE)));
-                // authenticationFailureHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
                 return;
             }
         }
