@@ -34,7 +34,6 @@ public class RBACServiceImpl implements RBACService {
 
         if (userInfoMapFromRedis instanceof Map) {
             var userInfoMap = (Map<String, Object>) userInfoMapFromRedis;
-            var username = userInfoMap.get("username");
             var permissionList = (List<String>) userInfoMap.get("authorizesList");
             for (var grantedAuthority : permissionList) {
                 var url_method = grantedAuthority.split(":");
@@ -47,7 +46,6 @@ public class RBACServiceImpl implements RBACService {
                     return true;
                 }
             }
-            log.warn("-==用户:[{}]越级访问:[{}]--[{}]==-", username, requestUri, requestMethod);
         }
         return false;
     }
