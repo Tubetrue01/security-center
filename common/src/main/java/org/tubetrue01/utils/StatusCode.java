@@ -19,7 +19,8 @@ public enum StatusCode {
     LOGOUT_ERROR(10039, "注销失败"),
     JWT_IS_NULL_OR_INVALID(10040, "JWT为空或失效"),
     LOGIN_TIMEOUT(10041, "登陆超时"),
-    SMS_CODE_FAILURE(10042, "短信码校验失败");
+    SMS_CODE_FAILURE(10042, "短信码校验失败"),
+    NO_PERMISSION(10045, "无权访问");
 
     public int code;
     public String msg;
