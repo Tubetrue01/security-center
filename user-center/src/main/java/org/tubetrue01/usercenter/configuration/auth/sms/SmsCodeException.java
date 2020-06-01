@@ -10,8 +10,8 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
  * Time : 5:00 下午
  * Description :
  */
-public class ValidateSmsCodeException extends AuthenticationServiceException {
-    public ValidateSmsCodeException(String msg) {
+public class SmsCodeException extends AuthenticationServiceException {
+    public SmsCodeException(String msg) {
         super(msg);
     }
 }

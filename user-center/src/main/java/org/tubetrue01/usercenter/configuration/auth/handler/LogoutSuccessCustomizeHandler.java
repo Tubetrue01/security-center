@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 @Log4j2
 @Component
-public class LogoutSuccessCustomerHandler implements LogoutSuccessHandler {
+public class LogoutSuccessCustomizeHandler implements LogoutSuccessHandler {
     private static final String TOKEN = "token";
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

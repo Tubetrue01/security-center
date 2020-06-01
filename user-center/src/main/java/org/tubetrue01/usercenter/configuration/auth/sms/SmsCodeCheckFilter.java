@@ -38,7 +38,7 @@ public class SmsCodeCheckFilter extends OncePerRequestFilter {
                 && ("post".equalsIgnoreCase(httpServletRequest.getMethod()))) {
             try {
                 validateSmsCode(new ServletWebRequest(httpServletRequest));
-            } catch (ValidateSmsCodeException e) {
+            } catch (SmsCodeException e) {
                 log.error("-==短信码校验失败==-");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 httpServletResponse.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.SMS_CODE_FAILURE)));
@@ -56,11 +56,11 @@ public class SmsCodeCheckFilter extends OncePerRequestFilter {
         log.info("-====SmsCode From request :{} ", smsCodeInRequest);
 
         if (smsCodeInRequest == null || smsCodeInRequest.equals("")) {
-            throw new ValidateSmsCodeException("验证码不能为空！");
+            throw new SmsCodeException("验证码不能为空！");
         } else if (smsCodeFromRedis == null) {
-            throw new ValidateSmsCodeException("验证码不存在，请重新发送！");
+            throw new SmsCodeException("验证码不存在，请重新发送！");
         } else if (!smsCodeFromRedis.toString().equalsIgnoreCase(smsCodeInRequest)) {
-            throw new ValidateSmsCodeException("验证码不正确！");
+            throw new SmsCodeException("验证码不正确！");
         }
         // Valid success and delete it
         Utils.RedisUtils.delete(mobile);

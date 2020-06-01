@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 @Log4j2
 @Component
-public class AuthenticationCustomerEntryPoint implements AuthenticationEntryPoint {
+public class AuthenticationCustomizeEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         var token = request.getHeader("token");
