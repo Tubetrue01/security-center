@@ -32,13 +32,11 @@ public class SmsCodeCheckFilter extends OncePerRequestFilter {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         if (antPathMatcher.match("/user/login/mobile", httpServletRequest.getRequestURI())
                 && ("post".equalsIgnoreCase(httpServletRequest.getMethod()))) {
-            try {
-                validateSmsCode(new ServletWebRequest(httpServletRequest));
-            } catch (SmsCodeException e) {
+            var isValid = validateSmsCode(new ServletWebRequest(httpServletRequest));
+            if (!isValid) {
                 log.error("-==短信码校验失败==-");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 httpServletResponse.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.SMS_CODE_FAILURE)));
@@ -48,21 +46,20 @@ public class SmsCodeCheckFilter extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    private void validateSmsCode(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
+    private boolean validateSmsCode(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
+        // Get the sms code from request
         var smsCodeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), "smsCode");
+        // Get the mobile from the request
         var mobile = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), "mobile");
-        var smsCodeFromRedis = Utils.RedisUtils.get(mobile);
-
-        log.info("-====SmsCode From request :{} ", smsCodeInRequest);
-
-        if (smsCodeInRequest == null || smsCodeInRequest.equals("")) {
-            throw new SmsCodeException("验证码不能为空！");
-        } else if (smsCodeFromRedis == null) {
-            throw new SmsCodeException("验证码不存在，请重新发送！");
-        } else if (!smsCodeFromRedis.toString().equalsIgnoreCase(smsCodeInRequest)) {
-            throw new SmsCodeException("验证码不正确！");
+        log.info("-====SmsCode from request :{} ", smsCodeInRequest);
+        if (smsCodeInRequest != null && !"".equals(smsCodeInRequest)) {
+            var smsCodeFromRedis = Utils.RedisUtils.get(mobile);
+            if (smsCodeFromRedis != null && smsCodeFromRedis.toString().equalsIgnoreCase(smsCodeInRequest)) {
+                // Valid and delete it
+                Utils.RedisUtils.delete(mobile);
+                return true;
+            }
         }
-        // Valid success and delete it
-        Utils.RedisUtils.delete(mobile);
+        return false;
     }
 }
