@@ -3,6 +3,7 @@ package org.tubetrue01.clienta.configuration.rbac;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.tubetrue01.utils.Config;
 import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
@@ -26,7 +27,7 @@ import java.io.IOException;
 public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = request.getHeader("token");
+        var token = request.getHeader(Config.Security.TOKEN_PARAM_IN_header);
         if (token == null || Utils.RedisUtils.get(token) == null) {
             log.warn("Token:[{}]登陆超时", token);
             response.setContentType("application/json;charset=UTF-8");

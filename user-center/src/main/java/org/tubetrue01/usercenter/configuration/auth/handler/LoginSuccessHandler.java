@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.tubetrue01.utils.Config;
 import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
@@ -31,8 +32,6 @@ import java.util.Map;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final long REDIS_EXPIRE = 60L;  // 60s
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("-==登陆成功！==-");
@@ -49,19 +48,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             userInfoMap.put("username", userInfo.getUsername());
             userInfoMap.put("authorizesList", authorizesList);
 
-            // The jwt has the 2 hours lifetime
             var jwt = Jwts.builder()
                     .setSubject(authentication.getName())
-                    .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2 * 1000))
-                    .signWith(SignatureAlgorithm.HS256, "MyJwtSecret")
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 + Config.Security.JWT_EXPIRED_TIME))
+                    .signWith(SignatureAlgorithm.HS256, Config.Security.JWT_SIGNING_KEY)
                     .compact();
 
-            userInfoMap.put("jwt", jwt);
+            userInfoMap.put(Config.Security.JWT_PARAM_IN_HEADER, jwt);
             // The token info has the 60s lifetime
-            Utils.RedisUtils.set(token, userInfoMap, REDIS_EXPIRE);
+            Utils.RedisUtils.set(token, userInfoMap, Config.Security.TOKEN_EXPIRED_TIME);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(
-                    ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of("token", token, "jwt", jwt))
+                    ResultRtn.of(StatusCode.LOGIN_SUCCESS, Map.of(Config.Security.TOKEN_PARAM_IN_header, token, Config.Security.JWT_PARAM_IN_HEADER, jwt))
             ));
         }
     }

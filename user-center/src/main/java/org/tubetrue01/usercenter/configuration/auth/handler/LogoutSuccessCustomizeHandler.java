@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.tubetrue01.utils.Config;
 import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
@@ -23,10 +24,9 @@ import java.io.IOException;
 @Log4j2
 @Component
 public class LogoutSuccessCustomizeHandler implements LogoutSuccessHandler {
-    private static final String TOKEN = "token";
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        var token = request.getHeader(TOKEN);
+        var token = request.getHeader(Config.Security.TOKEN_PARAM_IN_header);
         response.setContentType("application/json;charset=utf-8");
         try {
             var out = response.getWriter();

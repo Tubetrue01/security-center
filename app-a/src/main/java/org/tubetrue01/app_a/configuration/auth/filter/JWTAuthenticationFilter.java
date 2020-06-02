@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.tubetrue01.utils.Config;
 import org.tubetrue01.utils.ResultRtn;
 import org.tubetrue01.utils.StatusCode;
 import org.tubetrue01.utils.Utils;
@@ -36,7 +37,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        var token = request.getHeader("jwt");
+        var token = request.getHeader(Config.Security.JWT_PARAM_IN_HEADER);
         log.info("-==Get the token is : [{}]==-", token);
         UsernamePasswordAuthenticationToken authenticationToken;
         if (token == null || token.isEmpty() || (authenticationToken = getAuthentication(token)) == null) {
@@ -51,7 +52,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         try {
             var claims = Jwts.parser()
-                    .setSigningKey("MyJwtSecret")
+                    .setSigningKey(Config.Security.JWT_SIGNING_KEY)
                     .parseClaimsJws(token)
                     .getBody();
             var username = claims.getSubject();
