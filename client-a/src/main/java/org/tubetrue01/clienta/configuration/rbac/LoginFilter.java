@@ -28,7 +28,10 @@ public class LoginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = request.getHeader(Config.Security.TOKEN_PARAM_IN_header);
-        if (token == null || Utils.RedisUtils.get(token) == null) {
+        if (token == null
+                || Config.Cache.ENABLE ?
+                Config.Cache.isNull(token) && !Utils.RedisUtils.isContain(token)
+                : !Utils.RedisUtils.isContain(token)) {
             log.warn("Token:[{}]登陆超时", token);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().println(Utils.JSONUtils.objectToJson(ResultRtn.of(StatusCode.LOGIN_TIMEOUT)));

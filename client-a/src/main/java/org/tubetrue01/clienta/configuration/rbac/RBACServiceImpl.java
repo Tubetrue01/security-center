@@ -24,18 +24,25 @@ import java.util.Map;
 @SuppressWarnings("all")
 public class RBACServiceImpl implements RBACService {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-
     @Override
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         var token = request.getHeader(Config.Security.TOKEN_PARAM_IN_header);
-        var userInfoMapFromRedis = Utils.RedisUtils.get(token);
+        Object userInfoMapFromRedis = null;
+
+        if (!Config.Cache.ENABLE) {
+            userInfoMapFromRedis = Utils.RedisUtils.get(token);
+        } else if (Config.Cache.ENABLE && (Config.Cache.isNull(token))) {
+            log.warn("-==一级缓存未命中==-");
+            // Put the authorizesList form redis to CACHE
+            Config.Cache.put(token, Utils.RedisUtils.get(token));
+        }
+
         var requestUri = request.getRequestURI();
         var requestMethod = request.getMethod();
 
-        if (userInfoMapFromRedis instanceof Map) {
-            var userInfoMap = (Map<String, Object>) userInfoMapFromRedis;
-            var permissionList = (List<String>) userInfoMap.get("authorizesList");
-            for (var grantedAuthority : permissionList) {
+        if (Config.Cache.ENABLE && (Config.Cache.get(token) instanceof Map) || userInfoMapFromRedis instanceof Map) {
+            for (var grantedAuthority : Config.Cache.ENABLE ? ((List<String>) ((Map<String, Object>) Config.Cache.get(token)).get("authorizesList")) :
+                    (List<String>) ((Map<String, Object>) userInfoMapFromRedis).get("authorizesList")) {
                 var url_method = grantedAuthority.split(":");
                 var url = url_method[0];
                 var method = url_method[1];

@@ -21,4 +21,10 @@ public class SecurityConfigProperties {
     private String tokenParamInHeader = "token";       // token param name in request header
     private long tokenExpiredTime = 60L;               // 60s
     private long jwtExpiredTime = 60L;                 // 60s
+    private Client client;                             // client config
+
+    @Data
+    public static class Client {
+        private boolean cache = false;                 // do you need the first-level cache
+    }
 }

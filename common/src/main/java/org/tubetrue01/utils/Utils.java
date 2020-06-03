@@ -152,6 +152,10 @@ public class Utils {
             return redisTemplate.opsForValue().get(key);
         }
 
+        public static boolean isContain(String key) {
+            return redisTemplate.hasKey(key);
+        }
+
         public static void delete(String key) {
             redisTemplate.delete(key);
         }

@@ -6,3 +6,6 @@ spring:
   redis:
     database: 1
     host: localhost
+security:
+  client:
+    cache: true
