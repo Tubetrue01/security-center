@@ -7,9 +7,10 @@
     <groupId>org.tubetrue01</groupId>
     <artifactId>security-center</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>${revision.version}</version>
 
     <properties>
+        <revision.version>1.0.0</revision.version>
         <java.version>11</java.version>
         <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
         <mysql.version>8.0.20</mysql.version>
@@ -19,19 +20,10 @@
     </properties>
 
     <modules>
-        <module>user-center</module>
-        <module>client-a</module>
-        <module>app-a</module>
-        <module>common</module>
+        <module>auth-starter</module>
     </modules>
 
     <dependencies>
-        <!-- Common -->
-        <dependency>
-            <groupId>org.tubetrue01</groupId>
-            <artifactId>common-spring-boot-starter</artifactId>
-            <version>${common.version}</version>
-        </dependency>
 
         <!-- Log4j2 -->
         <dependency>
@@ -109,13 +101,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!--    <build>-->
-    <!--        <plugins>-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.springframework.boot</groupId>-->
-    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-    <!--            </plugin>-->
-    <!--        </plugins>-->
-    <!--    </build>-->
 </project>
