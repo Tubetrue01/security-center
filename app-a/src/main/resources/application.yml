@@ -1,5 +1,0 @@
-server:
-  port: 5050
-spring:
-  main:
-    allow-bean-definition-overriding: true
