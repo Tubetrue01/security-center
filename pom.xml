@@ -21,6 +21,7 @@
 
     <modules>
         <module>auth-starter</module>
+        <module>bs-user-auth</module>
     </modules>
 
     <dependencies>
